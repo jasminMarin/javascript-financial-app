@@ -10,7 +10,8 @@ var uiController = (function() {
         tusuvLabel: ".budget__value",
         incomeLabel: ".budget__income--value",
         expenseLabel: ".budget__expenses--value",
-        percentageLabel: ".budget__expenses--percentage"
+        percentageLabel: ".budget__expenses--percentage",
+        containerDiv: ".container"
     };
     return {
         getInput : function() {
@@ -20,6 +21,7 @@ var uiController = (function() {
                 value: parseInt(document.querySelector(DOMstrings.inputValue).value)
            };  
         },
+
         getDOMstrings: function() {
             return DOMstrings;
         },
@@ -54,10 +56,10 @@ var uiController = (function() {
             var html, list;
             if(type === "inc") {
                 list = DOMstrings.incomeList;
-                html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%DESCRIPTION%</div><div class="right clearfix"><div class="item__value">%VALUE%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+                html = '<div class="item clearfix" id="inc-%id%"><div class="item__description">%DESCRIPTION%</div><div class="right clearfix"><div class="item__value">%VALUE%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             } else {
                 list = DOMstrings.expenseList;
-                html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%DESCRIPTION%</div><div class="right clearfix"><div class="item__value">%VALUE%</div><div class="item__percentage">%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+                html = '<div class="item clearfix" id="exp-%id%"><div class="item__description">%DESCRIPTION%</div><div class="right clearfix"><div class="item__value">%VALUE%</div><div class="item__percentage">%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             }
             
             // Ter html dotoroo orlogo, zarlaga-n utguudiig REPLACE ashiglaj uurchilj ugnu
@@ -67,7 +69,12 @@ var uiController = (function() {
             
             // Beltgesen HTML-ee DOM ruu hiij ugnu
             document.querySelector(list).insertAdjacentHTML('beforeend', html);
-        }
+        },
+
+        deleteListItem: function(id) {
+            var el = document.getElementById(id);
+            el.parentNode.removeChild(el);
+        },
     }
 })();
 
@@ -128,6 +135,16 @@ var financeController = (function() {
             }
         },
 
+        deleteItem: function(type, id) {
+            var ids = data.items[type].map(function(el) {
+                return el.id;
+            });
+            var index = ids.indexOf(id);
+            if (index !== -1) {
+                data.items[type].splice(index, 1);
+            }
+        },
+
         addItem: function(type, description, value) {
             var item, id;
             if (data.items[type].length === 0) id = 1;
@@ -140,6 +157,7 @@ var financeController = (function() {
             data.items[type].push(item);
             return item;
         },
+
         seeData: function() {
             return data;
         }
@@ -178,6 +196,23 @@ var appController = (function(uiController, financeController) {
             if (event.keyCode === 13 || event.which === 13) {
                 ctrlAddItem();
             };
+        });
+        document.querySelector(DOM.containerDiv).addEventListener('click', function(event) {
+            var id = event.target.parentNode.parentNode.parentNode.parentNode.id;
+            // inc-2, exp-1
+            if (id) {
+                var arr = id.split('-');
+                var type = arr[0];
+                var itemId = parseInt(arr[1]);
+
+                // 1. sanhuugiin modul-s type, id ashiglaj usgana
+                financeController.deleteItem(type, itemId);
+
+                // 2. delgets deeres ene elemnt-g ustgana#
+                uiController.deleteListItem(id);
+
+                // 3. uldegdel tootsoog shinechilj haruulna
+            }        
         });
     };
     return {
