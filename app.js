@@ -37,7 +37,7 @@ var uiController = (function() {
             .split("")
             .reverse()
             .join(""); 
-        if (z[0] === ",") z = z.substr(1, z.length - 1);
+        if (z[0] === ",") z = z.substr(1, z.length - 1); // substring
         if (type === "inc") z = "+ " + z;
          else z = "- " + z;
          return z;
