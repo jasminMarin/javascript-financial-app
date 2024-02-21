@@ -32,15 +32,26 @@ var uiController = (function() {
         }
         var z = y.split("").reverse().join(""); 
         if (z[0] === ",") z = z.substring(1, z.length - 1);
-        if (type === "inc") z = "+" + z;
-         else z = "-" + z;
+        if (type === "inc") z = "+ " + z;
+         else z = "- " + z;
          return z;
     };
     return {
         displayDate: function() {
             var unuudur = new Date();
-            document.querySelector(DOMstrings.dateLabel).textContent = unuudur.getFullYear() + " oni " + unuudur.getMonth() + " sariin ";
+            document.querySelector(DOMstrings.dateLabel).textContent = unuudur.getMonth() + " of " + unuudur.getFullYear();
         }, 
+
+        changeType : function() {
+            var fields = document.querySelectorAll(
+                DOMstrings.inputType + ", " +  
+                DOMstrings.inputDescription  + ", " +
+                DOMstrings.inputValue);
+            nodeListForeach(fields, function(el) {
+                el.classList.toggle('red-focus');
+            });
+            document.querySelector(DOMstrings.addBtn).classList.toggle('red');
+        },
 
         getInput : function() {
             return {
@@ -297,6 +308,7 @@ var appController = (function(uiController, financeController) {
                 updateTusuv();
             }        
         });
+        document.querySelector(DOM.inputType).addEventListener('change', uiController.changeType);
     };
     return {
         init: function() {
