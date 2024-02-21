@@ -21,8 +21,11 @@ var uiController = (function() {
         }
     };
     var formatMoney = function(too, type) {
-        too = " " + too;
-        var x = too.split("").reverse().join("");
+        too = "" + too;
+        var x = too
+            .split("")
+            .reverse()
+            .join("");
         var y = "";
         var count = 1;
         for (var i = 0; i < x.length; i++) {
@@ -30,8 +33,11 @@ var uiController = (function() {
             if (count % 3 === 0) y = y + ",";
             count ++;
         }
-        var z = y.split("").reverse().join(""); 
-        if (z[0] === ",") z = z.substring(1, z.length - 1);
+        var z = y
+            .split("")
+            .reverse()
+            .join(""); 
+        if (z[0] === ",") z = z.substr(1, z.length - 1);
         if (type === "inc") z = "+ " + z;
          else z = "- " + z;
          return z;
